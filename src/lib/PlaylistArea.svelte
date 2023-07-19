@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { Playlist, SpotifyApi } from '@spotify/web-api-ts-sdk';
-	import type { PlaylistAreaType, SpotifyStore } from '$lib/types';
-	import { spotifyStore } from './stores';
+	import type { PlaylistAreaType, PlaylistStore, SpotifyStore } from '$lib/types';
+	import { spotifyPlaylists, spotifyStore } from './stores';
 
 	export let setPlaylist: (playlist: Playlist) => void;
 	export let sdk: SpotifyApi;
@@ -11,27 +11,42 @@
 	spotifyStore.subscribe((v) => {
 		spotify = v;
 	});
+	let playlistsLastFetched: PlaylistStore | null;
+	spotifyPlaylists.subscribe((v) => {
+		playlistsLastFetched = v;
+	});
 
 	const getPlaylists = async () => {
 		playlist = 'loading';
 
-		const playlists: Playlist[] = [];
-		let offset = 0;
-		while (true && spotify) {
-			const newPlaylists = await sdk!.playlists.getUsersPlaylists(
-				spotify.profile.id,
-				undefined,
-				offset
-			);
-			console.log(newPlaylists.limit, newPlaylists.offset, newPlaylists.total);
-			playlists.push(...newPlaylists.items);
-			if (newPlaylists.limit + newPlaylists.offset > newPlaylists.total) {
-				break;
+		let userPlaylists: Playlist[] = [];
+		if (
+			!(
+				playlistsLastFetched &&
+				playlistsLastFetched.fetched?.getTime() - new Date().getTime() < 60 * 1000
+			)
+		) {
+			let offset = 0;
+			while (true && spotify) {
+				const newPlaylists = await sdk!.playlists.getUsersPlaylists(
+					spotify.profile.id,
+					undefined,
+					offset
+				);
+				console.log(newPlaylists.limit, newPlaylists.offset, newPlaylists.total);
+				userPlaylists.push(...newPlaylists.items);
+				if (newPlaylists.limit + newPlaylists.offset > newPlaylists.total) {
+					break;
+				}
+				offset += newPlaylists.limit;
 			}
-			offset += newPlaylists.limit;
+		} else {
+			console.log('skip fetch');
+			userPlaylists = playlistsLastFetched.playlists;
 		}
-		console.log(playlists);
-		playlist = playlists;
+		console.log(userPlaylists);
+		playlist = userPlaylists;
+		spotifyPlaylists.set({ playlists: userPlaylists, fetched: new Date() });
 	};
 </script>
 
