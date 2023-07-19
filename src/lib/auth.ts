@@ -7,18 +7,18 @@ export const createState = (): string => {
 	return state;
 };
 
-export const COOKIES = {
-	access_token: 'spotify-access-token',
-	refresh_token: 'spotify-refresh-token',
-	scope: 'spotify-token-scope'
-};
-
 export type SpotifyTokenData = {
 	access_token: string;
 	token_type: string;
 	expires_in: string;
 	refresh_token: string;
 	scope: string;
+};
+export type SpotifyError = {
+	error: {
+		status: number;
+		message: string;
+	};
 };
 
 export const SPOTIFY_BASE = 'https://api.spotify.com/v1';
@@ -37,3 +37,4 @@ export const makeSpotifyRequest = async (
 		return null;
 	}
 };
+export const scope = 'playlist-read-private playlist-read-collaborative';

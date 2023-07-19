@@ -1,11 +1,10 @@
 import { redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
-import { createState } from '../../../lib/auth';
+import { createState, scope } from '../../../lib/auth';
 import { env } from '$env/dynamic/public';
 import { PUBLIC_TARGET_URL } from '$env/static/public';
 
 const redirectURI = PUBLIC_TARGET_URL + '/auth/redirect';
-const scope = 'playlist-read-private playlist-read-collaborative';
 
 export const load: PageServerLoad = async ({ cookies }) => {
 	const state = createState();
