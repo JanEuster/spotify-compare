@@ -1,0 +1,16 @@
+import { redirect } from '@sveltejs/kit';
+import type { PageServerLoad } from './$types';
+import { createState } from '../../../lib/auth';
+import { env } from '$env/dynamic/public';
+
+const redirectURI = 'http://localhost:5173/auth/redirect';
+const scope = 'playlist-read-private playlist-read-collaborative';
+
+export const load: PageServerLoad = async ({ cookies }) => {
+	const state = createState();
+	cookies.set('spotify-state', state, { maxAge: 10 * 60 }); // auth flow may only take 10 minutes to complete (very generous)
+	throw redirect(
+		308,
+		`https://accounts.spotify.com/authorize?response_type=code&client_id=${env.PUBLIC_SPOTIFY_CLIENT_ID}&scope=${scope}&redirect_uri=${redirectURI}&state=${state}`
+	);
+};
