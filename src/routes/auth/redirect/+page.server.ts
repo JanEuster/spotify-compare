@@ -1,6 +1,6 @@
 import { redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
-import { PUBLIC_SPOTIFY_CLIENT_ID } from '$env/static/public';
+import { PUBLIC_SPOTIFY_CLIENT_ID, PUBLIC_TARGET_URL } from '$env/static/public';
 import { env } from '$env/dynamic/private';
 import { COOKIES, type SpotifyTokenData } from '$lib/auth';
 
@@ -10,7 +10,7 @@ export const load: PageServerLoad = async ({ url, cookies }) => {
 	const error = url.searchParams.get('error');
 	if (state == url.searchParams.get('state') && code && !error) {
 		const data = {
-			redirect_uri: 'http://localhost:5173/auth/redirect',
+			redirect_uri: PUBLIC_TARGET_URL + '/auth/redirect',
 			code: code,
 			grant_type: 'authorization_code'
 		};
