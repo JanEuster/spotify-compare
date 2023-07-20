@@ -27,6 +27,7 @@ export const makeSpotifyRequest = async (
 	endpoint: string
 ): Promise<Record<string, any> | null> => {
 	const res = await fetch(SPOTIFY_BASE + endpoint, {
+		cache: 'reload',
 		headers: {
 			Authorization: `Bearer ${token}`
 		}

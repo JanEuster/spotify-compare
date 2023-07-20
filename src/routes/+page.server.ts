@@ -2,16 +2,16 @@ import { env } from '$env/dynamic/private';
 import { PUBLIC_SPOTIFY_CLIENT_ID } from '$env/static/public';
 import { makeSpotifyRequest, scope, type SpotifyError } from '$lib/auth';
 import type { PageServerLoad } from './$types';
-import type { AccessToken, UserResponse } from '@spotify/web-api-ts-sdk';
+import { SpotifyApi, type AccessToken, type UserResponse } from '@spotify/web-api-ts-sdk';
 
 export const load: PageServerLoad = async ({ cookies }) => {
 	const tokenCookie = cookies.get('spotifyAccessToken');
 	if (tokenCookie) {
 		const accessToken = JSON.parse(tokenCookie) as AccessToken;
-		const spotifyUserProfile = (await makeSpotifyRequest(accessToken.access_token, '/me')) as
-			| UserResponse
-			| SpotifyError;
+		const sdk = SpotifyApi.withAccessToken(PUBLIC_SPOTIFY_CLIENT_ID, accessToken);
+		const spotifyUserProfile = (await sdk.currentUser.profile()) as UserResponse | SpotifyError;
 
+		console.log('profile', spotifyUserProfile);
 		if (spotifyUserProfile && !(spotifyUserProfile as SpotifyError).error) {
 			return {
 				auth: true,
@@ -40,7 +40,9 @@ export const load: PageServerLoad = async ({ cookies }) => {
 					}
 				});
 
+				console.log('before refresh', accessToken.access_token);
 				accessToken.access_token = (await res.json()).access_token;
+				console.log('after refresh', accessToken.access_token);
 				cookies.set('spotifyAccessToken', JSON.stringify(accessToken), { path: '/' });
 
 				const spotifyUserProfile = (await makeSpotifyRequest(accessToken.access_token, '/me')) as
@@ -51,7 +53,7 @@ export const load: PageServerLoad = async ({ cookies }) => {
 					return {
 						auth: true,
 						accessToken: accessToken,
-						scopes: cookies.get(COOKIES.scope)!.split(' '),
+						scopes: scope.split(' '),
 						profile: spotifyUserProfile as UserResponse
 					};
 				}
