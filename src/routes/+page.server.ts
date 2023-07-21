@@ -8,18 +8,19 @@ export const load: PageServerLoad = async ({ cookies }) => {
 	const tokenCookie = cookies.get('spotifyAccessToken');
 	if (tokenCookie) {
 		const accessToken = JSON.parse(tokenCookie) as AccessToken;
-		const sdk = SpotifyApi.withAccessToken(PUBLIC_SPOTIFY_CLIENT_ID, accessToken);
-		const spotifyUserProfile = (await sdk.currentUser.profile()) as UserResponse | SpotifyError;
+		try {
+			const sdk = SpotifyApi.withAccessToken(PUBLIC_SPOTIFY_CLIENT_ID, accessToken);
+			const spotifyUserProfile = (await sdk.currentUser.profile()) as UserResponse | SpotifyError;
 
-		console.log('profile', spotifyUserProfile);
-		if (spotifyUserProfile && !(spotifyUserProfile as SpotifyError).error) {
+			console.log('profile', spotifyUserProfile);
+
 			return {
 				auth: true,
 				accessToken: accessToken,
 				scopes: scope.split(' '),
 				profile: spotifyUserProfile as UserResponse
 			};
-		} else {
+		} catch (error) {
 			// refresh token
 			const spotifyRefreshToken = accessToken.refresh_token;
 			if (spotifyRefreshToken) {

@@ -116,7 +116,7 @@
 								<img src={track.track.album.images[2].url} />
 								<h4>
 									<b>{track.track.name}</b>{#if track.track.album.album_type != 'single'}
-										- {track.track.album.name}{/if}
+										{' - '}{track.track.album.name}{/if}
 								</h4>
 								<ul>
 									{#each track.track.artists as artist}
