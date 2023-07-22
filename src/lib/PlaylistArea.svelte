@@ -1,11 +1,6 @@
 <script lang="ts">
 	import type { Playlist, PlaylistedTrack, SpotifyApi, Track } from '@spotify/web-api-ts-sdk';
-	import type {
-		PlaylistAreaType,
-		PlaylistStore,
-		PlaylistWithTracks,
-		SpotifyStore
-	} from '$lib/types';
+	import type { PlaylistAreaType, PlaylistStore, PlaylistWithTracks, SpotifyStore } from '$lib/types';
 	import { spotifyPlaylists, spotifyStore } from './stores';
 
 	export let setPlaylist: (playlist: PlaylistWithTracks) => void;
@@ -48,19 +43,10 @@
 		playlist = 'loading';
 
 		let userPlaylists: Playlist[] = [];
-		if (
-			!(
-				playlistsLastFetched &&
-				playlistsLastFetched.fetched?.getTime() - new Date().getTime() < 60 * 1000
-			)
-		) {
+		if (!(playlistsLastFetched && playlistsLastFetched.fetched?.getTime() - new Date().getTime() < 60 * 1000)) {
 			let offset = 0;
 			while (true && spotify) {
-				const newPlaylists = await spotify.sdk.playlists.getUsersPlaylists(
-					spotify.profile.id,
-					undefined,
-					offset
-				);
+				const newPlaylists = await spotify.sdk.playlists.getUsersPlaylists(spotify.profile.id, undefined, offset);
 				console.log(newPlaylists.limit, newPlaylists.offset, newPlaylists.total);
 				userPlaylists.push(...newPlaylists.items);
 				if (newPlaylists.limit + newPlaylists.offset > newPlaylists.total) {
@@ -98,31 +84,46 @@
 							setPlaylist(playlist);
 						}}
 					>
-						<h3>{pl.name}</h3>
+						<div>
+							<img src={pl.images[pl.images.length - 1].url} />
+							<h3>{pl.name}</h3>
+						</div>
 						<div class="plus">+</div>
 					</button>
 				{/each}
 			</div>
 		{:else}
-			<div class="playlist">
-				<h2>{playlist.playlist.name}</h2>
-				<p>{@html playlist.playlist.description}</p>
-				<hr />
+			<div class="playlist-tracks">
+				<header>
+					<h2>{playlist.playlist.name}</h2>
+					<p>{@html playlist.playlist.description}</p>
+					<hr />
+				</header>
 				<div class="tracks">
 					{#each playlist.tracks as track}
 						<div class="track">
 							{#if track.track.album}
 								<!-- this info can only be displayed when the item is a track, not an episode => track.track.track = true && track.track.episode = false -->
-								<img src={track.track.album.images[2].url} />
-								<h4>
-									<b>{track.track.name}</b>{#if track.track.album.album_type != 'single'}
-										{' - '}{track.track.album.name}{/if}
-								</h4>
-								<ul>
-									{#each track.track.artists as artist}
-										<li><h5>{artist.name}</h5></li>
-									{/each}
-								</ul>
+								<div class="track-img-container"><img src={track.track.album.images[2].url} /></div>
+								<div>
+									{#if track.track.album.album_type != 'single'}
+										<h6>
+											<i
+												>{track.track.name.toLowerCase() != track.track.album.name.toLowerCase()
+													? `Album: ${track.track.album.name}`
+													: ''}</i
+											>
+										</h6>
+									{/if}
+									<h4>
+										{track.track.name}
+									</h4>
+									<ul>
+										{#each track.track.artists as artist}
+											<li><h5>{artist.name}</h5></li>
+										{/each}
+									</ul>
+								</div>
 							{/if}
 						</div>
 					{/each}
@@ -154,27 +155,74 @@
 				border: 3px dashed black;
 				border-radius: 6px;
 			}
+
+			& > .playlist-tracks {
+				header {
+					background-color: var(--c-green-20);
+					padding: 2px 4px;
+					p {
+						color: var(--c-offwhite);
+					}
+					hr {
+						background: none;
+						border: none;
+						border-bottom: 4px dotted var(--c-green-60);
+					}
+				}
+				.tracks {
+					border: 1px dotted var(--c-green-100);
+					padding: 4px;
+					padding-top: 6px;
+					.track {
+						border: 1px dotted var(--c-green-100);
+						border-radius: 6px;
+						margin-bottom: 2px;
+						padding: 6px;
+
+						display: flex;
+						gap: 10px;
+						ul {
+							list-style: none;
+						}
+					}
+				}
+			}
 		}
 
 		.playlist-area {
-			border: 3px solid black;
+			border: 3px solid var(--c-green-60);
 			border-radius: 6px;
+			background-color: var(--c-green-20);
+			cursor: pointer;
 			.plus {
 				font-size: 40px;
+				color: var(--c-green-100);
 			}
 		}
 		.playlist-list {
-			border: 3px solid black;
+			border: 3px solid var(--c-green-60);
 			border-radius: 6px;
+			background-color: var(--c-green-20);
 
 			.playlist {
 				display: flex;
 				justify-content: space-between;
 				align-items: center;
 				width: 100%;
+				height: 60px;
 				padding: 5px;
 				border-bottom: 2px solid black;
-
+				background-color: var(--c-green-20);
+				border: none;
+				border-top: 1px solid var(--c-background);
+				border-bottom: 1px solid var(--c-background);
+				color: var(--c-text);
+				& > div {
+					display: flex;
+					height: 100%;
+					gap: 10px;
+					text-align: left;
+				}
 				&:hover {
 				}
 

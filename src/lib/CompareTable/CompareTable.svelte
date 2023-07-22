@@ -75,7 +75,7 @@
 			</td>
 			<td class="table-data">
 				<table class="inner-table">
-					{#each pl1.tracks as track}
+					{#each pl2.tracks as track}
 						<td>
 							<img src={track.track.album.images[2].url} />
 							<p>{track.track.name} - {track.track.artists.map((artist) => artist.name).join(', ')}</p>

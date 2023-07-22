@@ -18,6 +18,7 @@
 	let playlist1: PlaylistWithTracks | null = null;
 	let playlist2: PlaylistWithTracks | null = null;
 	let playlist2Selectable = false;
+	let compare = false;
 
 	$: playlist2Selectable = Boolean(playlist1 && (playlist1 as PlaylistWithTracks).playlist.owner);
 	$: console.log(playlist1);
@@ -26,24 +27,27 @@
 <div class="app">
 	{#if data.auth && data.profile && sdk}
 		<nav>
-			<img src={data.profile.images[0].url} alt="user profile" />
-			<a href={data.profile.external_urls.spotify}><h3>{data.profile?.display_name}</h3></a>
+			<div>
+				<img src={data.profile.images[0].url} alt="user profile" />
+				<a href={data.profile.external_urls.spotify}><h3>{data.profile?.display_name}</h3></a>
+			</div>
+			<h1>Spotify-Compare</h1>
 		</nav>
 		<main>
-			{#if !(playlist1 && playlist2)}
-				<div class="playlist-areas-container">
-					<PlaylistArea
-						selectable={true}
-						setPlaylist={async (playlist) => (playlist1 = playlist)}
-					/>
-					<PlaylistArea
-						selectable={playlist2Selectable}
-						setPlaylist={async (playlist) => {
-							playlist2 = playlist;
-						}}
-					/>
-				</div>
-			{:else}
+			<div class="playlist-areas-container" style={compare ? 'display: none;' : ''}>
+				<PlaylistArea selectable={true} setPlaylist={async (playlist) => (playlist1 = playlist)} />
+				{#if playlist1 && playlist2}
+					<button class="compare-now" on:click={() => (compare = true)}>compare now</button>
+				{/if}
+				<PlaylistArea
+					selectable={playlist2Selectable}
+					setPlaylist={async (playlist) => {
+						playlist2 = playlist;
+					}}
+				/>
+			</div>
+			{#if playlist1 && playlist2 && compare}
+				<button on:click={() => (compare = false)}>Back</button>
 				<CompareTable pl1={playlist1} pl2={playlist2} />
 			{/if}
 		</main>
@@ -60,7 +64,19 @@
 		height: 100vh;
 		nav {
 			display: flex;
+			flex-direction: row;
+			justify-content: space-between;
 			height: 10%;
+			div {
+				display: flex;
+				img {
+					aspect-ratio: 1;
+					min-width: 40px;
+					min-height: 40px;
+					width: 10vmin;
+					height: 10vmin;
+				}
+			}
 		}
 		main {
 			display: flex;
@@ -76,6 +92,17 @@
 				height: 100%;
 				display: flex;
 				flex-direction: row;
+				gap: 2px;
+
+				.compare-now {
+					background-color: var(--c-green-20);
+					border: 1px dotted var(--c-green-60);
+					outline: 1px dotted var(--c-green-100);
+					border-radius: 6px;
+					max-height: 100px;
+					min-width: 100px;
+					color: var(--c-text);
+				}
 			}
 		}
 	}
