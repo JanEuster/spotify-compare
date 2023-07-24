@@ -46,7 +46,7 @@
 		<th>
 			<PlaylistHeader pl={pl1} />
 		</th>
-		<th>compared to</th>
+		<th><h2>compared to</h2></th>
 		<th>
 			<PlaylistHeader pl={pl2} />
 		</th>
@@ -58,7 +58,8 @@
 					{#each pl1.tracks as track}
 						<td>
 							<img src={track.track.album.images[2].url} />
-							<p>{track.track.name} - {track.track.artists.map((artist) => artist.name).join(', ')}</p>
+							<h4>{track.track.name}</h4>
+							<h5>{track.track.artists.map((artist) => artist.name).join(', ')}</h5>
 						</td>
 					{/each}
 				</table>
@@ -68,7 +69,8 @@
 					{#each inter.song.identical as track}
 						<td>
 							<img src={track.track.album.images[2].url} />
-							<p>{track.track.name} - {track.track.artists.map((artist) => artist.name).join(', ')}</p>
+							<h4>{track.track.name}</h4>
+							<h5>{track.track.artists.map((artist) => artist.name).join(', ')}</h5>
 						</td>
 					{/each}
 				</table>
@@ -78,7 +80,8 @@
 					{#each pl2.tracks as track}
 						<td>
 							<img src={track.track.album.images[2].url} />
-							<p>{track.track.name} - {track.track.artists.map((artist) => artist.name).join(', ')}</p>
+							<h4>{track.track.name}</h4>
+							<h5>{track.track.artists.map((artist) => artist.name).join(', ')}</h5>
 						</td>
 					{/each}
 				</table>

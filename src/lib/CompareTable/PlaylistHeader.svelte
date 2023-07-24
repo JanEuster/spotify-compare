@@ -5,10 +5,10 @@
 </script>
 
 <img src={pl.playlist.images[0].url} alt="playlist cover" />
-<p>
+<h2>
 	{pl.playlist.name} - {pl.tracks.length} songs - by
 	<a href={pl.playlist.owner.external_urls.spotify}>{pl.playlist.owner.display_name}</a>
-</p>
+</h2>
 
 <style>
 	img {

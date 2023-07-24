@@ -46,9 +46,11 @@
 					}}
 				/>
 			</div>
-			{#if playlist1 && playlist2 && compare}
-				<button on:click={() => (compare = false)}>Back</button>
-				<CompareTable pl1={playlist1} pl2={playlist2} />
+			{#if playlist1 && playlist2}
+				<div style={!compare ? 'display: none;' : ''}>
+					<button on:click={() => (compare = false)}>Back</button>
+					<CompareTable pl1={playlist1} pl2={playlist2} />
+				</div>
 			{/if}
 		</main>
 	{:else}
