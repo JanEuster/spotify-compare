@@ -85,7 +85,7 @@
 						}}
 					>
 						<div>
-							<img src={pl.images[pl.images.length - 1].url} />
+							{#if pl.images.length > 0}<img src={pl.images[pl.images.length - 1].url} />{/if}
 							<h3>{pl.name}</h3>
 						</div>
 						<div class="plus">+</div>
