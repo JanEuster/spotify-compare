@@ -25,6 +25,7 @@
 	$: playlist2Selectable = Boolean(playlist1 && (playlist1 as PlaylistWithTracks).playlist.owner);
 	$: console.log('playlist1', playlist1);
 	$: console.log('playlist2', playlist2);
+	console.log(data.profile);
 </script>
 
 <div class="app">
@@ -66,7 +67,10 @@
 		display: flex;
 		flex-direction: column;
 		width: 100vw;
+		max-width: 1900px;
 		height: 100vh;
+		margin-left: auto;
+		margin-right: auto;
 		nav {
 			display: flex;
 			flex-direction: row;
@@ -86,7 +90,7 @@
 		main {
 			display: flex;
 			flex-direction: column;
-			width: 100vw;
+			width: 100%;
 			height: 90%;
 			// min-height: 70vh;
 			gap: 5px;

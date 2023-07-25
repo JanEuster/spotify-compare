@@ -56,4 +56,7 @@
 			text-decoration: underline dashed;
 		}
 	}
+	:global(p) {
+		line-height: 1;
+	}
 </style>

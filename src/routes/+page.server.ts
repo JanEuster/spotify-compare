@@ -8,20 +8,18 @@ export const load: PageServerLoad = async ({ cookies }) => {
 	const tokenCookie = cookies.get('spotifyAccessToken');
 	if (tokenCookie) {
 		const accessToken = JSON.parse(tokenCookie) as AccessToken;
-		try {
-			const spotifyUserProfile = (await makeSpotifyRequest(accessToken.access_token, '/me')) as
-				| UserResponse
-				| SpotifyError;
+		const spotifyUserProfile = (await makeSpotifyRequest(accessToken.access_token, '/me')) as
+			| UserResponse
+			| SpotifyError;
 
-			console.log('profile', spotifyUserProfile);
-
+		if (!(spotifyUserProfile as SpotifyError).error) {
 			return {
 				auth: true,
 				accessToken: accessToken,
 				scopes: scope.split(' '),
 				profile: spotifyUserProfile as UserResponse
 			};
-		} catch (error) {
+		} else {
 			// refresh token
 			const spotifyRefreshToken = accessToken.refresh_token;
 			if (spotifyRefreshToken) {
