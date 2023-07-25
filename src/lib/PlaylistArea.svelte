@@ -6,6 +6,7 @@
 	import Hr from './common/Hr.svelte';
 	import EditButton from './common/buttons/EditButton.svelte';
 	import ReloadButton from './common/buttons/ReloadButton.svelte';
+	import GotoButton from './common/buttons/GotoButton.svelte';
 
 	export let setPlaylist: (playlist: PlaylistWithTracks) => void;
 	export let selectable: boolean;
@@ -120,6 +121,7 @@
 							<p>{@html playlist.playlist.description}</p>
 						</div>
 						<div class="buttons">
+							<GotoButton href={playlist.playlist.external_urls.spotify} />
 							<EditButton onEdit={edit} />
 							<ReloadButton onReload={reload} />
 						</div>
@@ -176,11 +178,9 @@
 						.buttons {
 							display: flex;
 							align-items: start;
-							justify-content: start;
-							flex-direction: column;
+							justify-content: end;
 							flex-wrap: wrap;
-							width: 1%;
-							min-width: 32px;
+							width: 15%;
 							gap: 4px;
 							padding: 4px 0;
 						}
