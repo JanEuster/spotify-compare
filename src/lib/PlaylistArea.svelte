@@ -2,6 +2,8 @@
 	import type { Playlist, PlaylistedTrack, SpotifyApi, Track } from '@spotify/web-api-ts-sdk';
 	import type { PlaylistAreaType, PlaylistStore, PlaylistWithTracks, SpotifyStore } from '$lib/types';
 	import { spotifyPlaylists, spotifyStore } from './stores';
+	import TrackView from './common/TrackView.svelte';
+	import Hr from './common/Hr.svelte';
 
 	export let setPlaylist: (playlist: PlaylistWithTracks) => void;
 	export let selectable: boolean;
@@ -97,35 +99,11 @@
 				<header>
 					<h2>{playlist.playlist.name}</h2>
 					<p>{@html playlist.playlist.description}</p>
-					<hr />
+					<Hr />
 				</header>
 				<div class="tracks">
 					{#each playlist.tracks as track}
-						<div class="track">
-							{#if track.track.album}
-								<!-- this info can only be displayed when the item is a track, not an episode => track.track.track = true && track.track.episode = false -->
-								<div class="track-img-container"><img src={track.track.album.images[2].url} /></div>
-								<div>
-									{#if track.track.album.album_type != 'single'}
-										<h6>
-											<i
-												>{track.track.name.toLowerCase() != track.track.album.name.toLowerCase()
-													? `Album: ${track.track.album.name}`
-													: ''}</i
-											>
-										</h6>
-									{/if}
-									<h4>
-										{track.track.name}
-									</h4>
-									<ul>
-										{#each track.track.artists as artist}
-											<li><h5>{artist.name}</h5></li>
-										{/each}
-									</ul>
-								</div>
-							{/if}
-						</div>
+						<TrackView {track} />
 					{/each}
 				</div>
 			</div>
@@ -161,30 +139,13 @@
 					background-color: var(--c-green-20);
 					padding: 2px 4px;
 					p {
-						color: var(--c-offwhite);
-					}
-					hr {
-						background: none;
-						border: none;
-						border-bottom: 4px dotted var(--c-green-60);
+						color: var(--c-grey);
 					}
 				}
 				.tracks {
 					border: 1px dotted var(--c-green-100);
 					padding: 4px;
 					padding-top: 6px;
-					.track {
-						border: 1px dotted var(--c-green-100);
-						border-radius: 6px;
-						margin-bottom: 2px;
-						padding: 6px;
-
-						display: flex;
-						gap: 10px;
-						ul {
-							list-style: none;
-						}
-					}
 				}
 			}
 		}

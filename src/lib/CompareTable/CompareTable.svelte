@@ -1,4 +1,6 @@
 <script lang="ts">
+	import Hr from '$lib/common/Hr.svelte';
+	import TrackView from '$lib/common/TrackView.svelte';
 	import type { PlaylistIntersections, PlaylistWithTracks } from '$lib/types';
 	import { generateIntersections } from '$lib/util';
 	import PlaylistHeader from './PlaylistHeader.svelte';
@@ -35,31 +37,31 @@
 	console.log(pl1.tracks);
 </script>
 
-<label for="compare_select">Property to Compare</label>
-<select id="compare_select" bind:value={selected}>
-	{#each Object.keys(options) as option}
-		<option value={option}>{options[option].label}</option>
-	{/each}
-</select>
 <table>
-	<tr>
+	<tr class="table-head-row">
 		<th>
 			<PlaylistHeader pl={pl1} />
 		</th>
-		<th><h2>compared to</h2></th>
+		<th>
+			<select id="compare_select" bind:value={selected}>
+				{#each Object.keys(options) as option}
+					<option value={option}>{options[option].label}</option>
+				{/each}
+			</select>
+			<h2>compared to</h2>
+		</th>
 		<th>
 			<PlaylistHeader pl={pl2} />
 		</th>
 	</tr>
+	<tr><td><Hr /></td><td><Hr /></td><td><Hr /></td></tr>
 	{#if selected == SONG_IDENTICAL}
 		<tr>
 			<td class="table-data">
 				<table class="inner-table">
 					{#each pl1.tracks as track}
 						<td>
-							<img src={track.track.album.images[2].url} />
-							<h4>{track.track.name}</h4>
-							<h5>{track.track.artists.map((artist) => artist.name).join(', ')}</h5>
+							<TrackView {track} />
 						</td>
 					{/each}
 				</table>
@@ -68,9 +70,7 @@
 				<table class="inner-table">
 					{#each inter.song.identical as track}
 						<td>
-							<img src={track.track.album.images[2].url} />
-							<h4>{track.track.name}</h4>
-							<h5>{track.track.artists.map((artist) => artist.name).join(', ')}</h5>
+							<TrackView {track} />
 						</td>
 					{/each}
 				</table>
@@ -79,36 +79,80 @@
 				<table class="inner-table">
 					{#each pl2.tracks as track}
 						<td>
-							<img src={track.track.album.images[2].url} />
-							<h4>{track.track.name}</h4>
-							<h5>{track.track.artists.map((artist) => artist.name).join(', ')}</h5>
+							<TrackView {track} />
 						</td>
 					{/each}
 				</table>
 			</td>
 		</tr>
 	{:else if selected == SONG_SIMILAR}
-		b
+		<tr>
+			<td class="table-data">
+				<table class="inner-table">
+					{#each pl1.tracks as track}
+						<td>
+							<TrackView {track} />
+						</td>
+					{/each}
+				</table>
+			</td>
+			<td class="table-data">
+				<table class="inner-table">
+					{#each inter.song.identical as track}
+						<td>
+							<TrackView {track} />
+						</td>
+					{/each}
+				</table>
+			</td>
+			<td class="table-data">
+				<table class="inner-table">
+					{#each pl2.tracks as track}
+						<td>
+							<TrackView {track} />
+						</td>
+					{/each}
+				</table>
+			</td>
+		</tr>
 	{:else if selected == ARTIST_FULL}
 		c
 	{:else if selected == ARTIST_ONE}
 		d
-	{:else if selected == GENRE_ALBUM}
+	{:else if selected == ALBUM}
 		e
-	{:else if selected == GENRE_ARTIST}
+	{:else if selected == GENRE_ALBUM}
 		f
-	{:else if selected == DATE_ADDED}
+	{:else if selected == GENRE_ARTIST}
 		g
+	{:else if selected == DATE_ADDED}
+		h
 	{/if}
 </table>
 
 <style lang="scss">
-	.table-data {
-		vertical-align: top;
+	table {
+		border: none;
+		border-collapse: collapse;
 
-		.inner-table {
-			display: flex;
-			flex-direction: column;
+		th:nth-child(1),
+		th:nth-child(3) {
+			width: 35.5%;
+		}
+		th:nth-child(2) {
+			width: 26%;
+		}
+
+		.table-head-row {
+			background-color: var(--c-green-20);
+		}
+		.table-data {
+			vertical-align: top;
+
+			.inner-table {
+				display: flex;
+				flex-direction: column;
+			}
 		}
 	}
 </style>

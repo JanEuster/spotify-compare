@@ -21,14 +21,15 @@
 	let compare = false;
 
 	$: playlist2Selectable = Boolean(playlist1 && (playlist1 as PlaylistWithTracks).playlist.owner);
-	$: console.log(playlist1);
+	$: console.log('playlist1', playlist1);
+	$: console.log('playlist2', playlist2);
 </script>
 
 <div class="app">
 	{#if data.auth && data.profile && sdk}
 		<nav>
 			<div>
-				<img src={data.profile.images[0].url} alt="user profile" />
+				<img src={data.profile.images[data.profile.images.length - 1].url} alt="user profile" />
 				<a href={data.profile.external_urls.spotify}><h3>{data.profile?.display_name}</h3></a>
 			</div>
 			<h1>Spotify-Compare</h1>

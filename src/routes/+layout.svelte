@@ -20,7 +20,8 @@
 		--c-green-20: rgba(29, 215, 94, 0.2);
 
 		--c-white: white;
-		--c-offwhite: rgb(179, 179, 179);
+		--c-offwhite: rgb(228, 228, 228);
+		--c-grey: rgb(179, 179, 179);
 		--c-text: var(--c-white);
 	}
 	:global(*, *::before, *:after) {
