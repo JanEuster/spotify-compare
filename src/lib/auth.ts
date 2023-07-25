@@ -22,15 +22,12 @@ export type SpotifyError = {
 };
 
 export const SPOTIFY_BASE = 'https://api.spotify.com/v1';
-export const makeSpotifyRequest = async (
-	token: string,
-	endpoint: string
-): Promise<Record<string, any> | null> => {
+export const makeSpotifyRequest = async (token: string, endpoint: string): Promise<Record<string, any> | null> => {
 	const res = await fetch(SPOTIFY_BASE + endpoint, {
 		cache: 'reload',
 		headers: {
-			Pragma: 'no-cache',
-			'Cache-Control': 'no-store',
+			// Pragma: 'no-cache',
+			// 'Cache-Control': 'no-store',
 			Authorization: `Bearer ${token}`
 		}
 	});

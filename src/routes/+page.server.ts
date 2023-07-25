@@ -2,15 +2,16 @@ import { env } from '$env/dynamic/private';
 import { PUBLIC_SPOTIFY_CLIENT_ID } from '$env/static/public';
 import { makeSpotifyRequest, scope, type SpotifyError } from '$lib/auth';
 import type { PageServerLoad } from './$types';
-import { SpotifyApi, type AccessToken, type UserResponse } from '@spotify/web-api-ts-sdk';
+import type { AccessToken, UserResponse } from '@spotify/web-api-ts-sdk';
 
 export const load: PageServerLoad = async ({ cookies }) => {
 	const tokenCookie = cookies.get('spotifyAccessToken');
 	if (tokenCookie) {
 		const accessToken = JSON.parse(tokenCookie) as AccessToken;
 		try {
-			const sdk = SpotifyApi.withAccessToken(PUBLIC_SPOTIFY_CLIENT_ID, accessToken);
-			const spotifyUserProfile = (await sdk.currentUser.profile()) as UserResponse | SpotifyError;
+			const spotifyUserProfile = (await makeSpotifyRequest(accessToken.access_token, '/me')) as
+				| UserResponse
+				| SpotifyError;
 
 			console.log('profile', spotifyUserProfile);
 
@@ -35,9 +36,9 @@ export const load: PageServerLoad = async ({ cookies }) => {
 					headers: {
 						// Accept: 'application/json',
 						'Content-Type': 'application/x-www-form-urlencoded',
-						Authorization: `Basic ${Buffer.from(
-							PUBLIC_SPOTIFY_CLIENT_ID + ':' + env.SPOTIFY_CLIENT_SECRET
-						).toString('base64')}`
+						Authorization: `Basic ${Buffer.from(PUBLIC_SPOTIFY_CLIENT_ID + ':' + env.SPOTIFY_CLIENT_SECRET).toString(
+							'base64'
+						)}`
 					}
 				});
 
@@ -50,6 +51,7 @@ export const load: PageServerLoad = async ({ cookies }) => {
 					| UserResponse
 					| SpotifyError;
 				console.log('refresh', spotifyUserProfile, accessToken);
+				console.log('refreshed token', (await res.json()).access_token);
 				if (spotifyUserProfile && !(spotifyUserProfile as SpotifyError).error) {
 					return {
 						auth: true,

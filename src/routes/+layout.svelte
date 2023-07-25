@@ -13,7 +13,7 @@
 	:root {
 		--c-background: #121212;
 
-		--c-green-100: rgba(29, 215, 94, 1);
+		--c-green-100: rgb(29, 215, 94);
 		--c-green-80: rgba(29, 215, 94, 0.8);
 		--c-green-60: rgba(29, 215, 94, 0.6);
 		--c-green-40: rgba(29, 215, 94, 0.4);

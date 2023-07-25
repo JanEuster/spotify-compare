@@ -135,6 +135,9 @@
 		border: none;
 		border-collapse: collapse;
 
+		th {
+			padding: 4px 0;
+		}
 		th:nth-child(1),
 		th:nth-child(3) {
 			width: 35.5%;

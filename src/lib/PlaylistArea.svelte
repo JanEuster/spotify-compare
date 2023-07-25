@@ -4,6 +4,8 @@
 	import { spotifyPlaylists, spotifyStore } from './stores';
 	import TrackView from './common/TrackView.svelte';
 	import Hr from './common/Hr.svelte';
+	import EditButton from './common/buttons/EditButton.svelte';
+	import ReloadButton from './common/buttons/ReloadButton.svelte';
 
 	export let setPlaylist: (playlist: PlaylistWithTracks) => void;
 	export let selectable: boolean;
@@ -45,6 +47,7 @@
 		playlist = 'loading';
 
 		let userPlaylists: Playlist[] = [];
+		// use stored playlists, when last fetched <60s ago
 		if (!(playlistsLastFetched && playlistsLastFetched.fetched?.getTime() - new Date().getTime() < 60 * 1000)) {
 			let offset = 0;
 			while (true && spotify) {
@@ -60,9 +63,21 @@
 			console.log('skip fetch');
 			userPlaylists = playlistsLastFetched.playlists;
 		}
+
 		console.log(userPlaylists);
 		playlist = userPlaylists;
 		spotifyPlaylists.set({ playlists: userPlaylists, fetched: new Date() });
+	};
+
+	const reload = async () => {
+		const oldPlaylist = playlist as PlaylistWithTracks;
+		playlist = 'loading';
+		const tracks = await getTracks(oldPlaylist.playlist);
+		playlist = { playlist: oldPlaylist.playlist, tracks: tracks };
+		setPlaylist(playlist);
+	};
+	const edit = async () => {
+		getPlaylists();
 	};
 </script>
 
@@ -82,7 +97,9 @@
 					<button
 						class="playlist"
 						on:click={async () => {
-							playlist = { playlist: pl, tracks: await getTracks(pl) };
+							playlist = 'loading';
+							const tracks = await getTracks(pl);
+							playlist = { playlist: pl, tracks: tracks };
 							setPlaylist(playlist);
 						}}
 					>
@@ -97,8 +114,16 @@
 		{:else}
 			<div class="playlist-tracks">
 				<header>
-					<h2>{playlist.playlist.name}</h2>
-					<p>{@html playlist.playlist.description}</p>
+					<div class="header-content">
+						<div class="text">
+							<h2>{playlist.playlist.name}</h2>
+							<p>{@html playlist.playlist.description}</p>
+						</div>
+						<div class="buttons">
+							<EditButton onEdit={edit} />
+							<ReloadButton onReload={reload} />
+						</div>
+					</div>
 					<Hr />
 				</header>
 				<div class="tracks">
@@ -137,9 +162,28 @@
 			& > .playlist-tracks {
 				header {
 					background-color: var(--c-green-20);
-					padding: 2px 4px;
-					p {
-						color: var(--c-grey);
+					.header-content {
+						display: flex;
+						justify-content: space-between;
+						width: 100%;
+
+						.text {
+							padding: 2px 4px;
+							p {
+								color: var(--c-grey);
+							}
+						}
+						.buttons {
+							display: flex;
+							align-items: start;
+							justify-content: start;
+							flex-direction: column;
+							flex-wrap: wrap;
+							width: 1%;
+							min-width: 32px;
+							gap: 4px;
+							padding: 4px 0;
+						}
 					}
 				}
 				.tracks {

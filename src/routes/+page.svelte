@@ -6,6 +6,8 @@
 	import PlaylistArea from '$lib/PlaylistArea.svelte';
 	import { spotifyStore } from '$lib/stores';
 	import CompareTable from '$lib/CompareTable/CompareTable.svelte';
+	import { makeSpotifyRequest } from '$lib/auth';
+	import { onMount } from 'svelte';
 	export let data: PageData;
 
 	let sdk: SpotifyApi | undefined = undefined;
@@ -48,7 +50,7 @@
 				/>
 			</div>
 			{#if playlist1 && playlist2}
-				<div style={!compare ? 'display: none;' : ''}>
+				<div class="compare-table-wrapper" style={!compare ? 'display: none;' : ''}>
 					<button on:click={() => (compare = false)}>Back</button>
 					<CompareTable pl1={playlist1} pl2={playlist2} />
 				</div>
@@ -105,6 +107,11 @@
 					max-height: 100px;
 					min-width: 100px;
 					color: var(--c-text);
+				}
+			}
+			.compare-table-wrapper {
+				button {
+					width: 100%;
 				}
 			}
 		}
