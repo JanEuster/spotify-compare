@@ -31,7 +31,7 @@
 		'genre.artist': { label: 'Genre (Artist)', data: playlistIntersections.genre.artist },
 		'date.added': { label: 'Date added', data: playlistIntersections.date_added }
 	};
-	let selected: string = Object.keys(options)[1];
+	let selected: string = SONG_IDENTICAL;
 	$: console.log(selected);
 
 	console.log(pl1.tracks);
@@ -49,6 +49,25 @@
 				{/each}
 			</select>
 			<h2>compared to</h2>
+			<div>
+				{#if selected == SONG_IDENTICAL}
+					{inter.song.identical.length} Songs
+				{:else if selected == SONG_SIMILAR}
+					{inter.song.similar.length} Songs
+				{:else if selected == ARTIST_FULL}
+					{inter.artist.full.length} Artists
+				{:else if selected == ARTIST_ONE}
+					{inter.artist.one.length} Artists
+				{:else if selected == ALBUM}
+					{inter.album.same.length} Albums
+				{:else if selected == GENRE_ALBUM}
+					{inter.genre.album.length} Genres
+				{:else if selected == GENRE_ARTIST}
+					{inter.genre.artist.length} Genres
+				{:else if selected == DATE_ADDED}
+					{inter.date_added.length}
+				{/if}
+			</div>
 		</th>
 		<th>
 			<PlaylistHeader pl={pl2} />
@@ -98,7 +117,7 @@
 			</td>
 			<td class="table-data">
 				<table class="inner-table">
-					{#each inter.song.identical as track}
+					{#each inter.song.similar as track}
 						<td>
 							<TrackView {track} />
 						</td>

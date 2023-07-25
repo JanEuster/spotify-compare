@@ -43,7 +43,9 @@ export const generateIntersections = (p1: PlaylistWithTracks, p2: PlaylistWithTr
 	const songSimilar2 = p2.tracks.filter((t) => p1TrackNames.includes(t.track.name.toLowerCase())) as PlaylistedTrack[];
 	console.log(p1TrackNames);
 	console.log(p2TrackNames);
-	intersections.song.similar = [...songSimilar1, ...songSimilar2];
+	intersections.song.similar = [...songSimilar1, ...songSimilar2].filter(
+		(songSimilar) => !songIdenticalIds.includes(songSimilar.track.id)
+	);
 
 	return intersections;
 };

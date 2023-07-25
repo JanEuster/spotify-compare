@@ -50,8 +50,8 @@
 					}}
 				/>
 			</div>
-			{#if playlist1 && playlist2}
-				<div class="compare-table-wrapper" style={!compare ? 'display: none;' : ''}>
+			{#if playlist1 && playlist2 && compare}
+				<div class="compare-table-wrapper">
 					<button on:click={() => (compare = false)}>Back</button>
 					<CompareTable pl1={playlist1} pl2={playlist2} />
 				</div>
