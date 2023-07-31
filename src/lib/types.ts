@@ -18,15 +18,23 @@ export type PlaylistIntersections = {
 		similar: PlaylistedTrack[];
 	};
 	artist: {
-		full: { artists: SimplifiedArtist[]; total: number; tracks: TrackMatch }[]; // all artists for a song match to another song
-		one: { [key: string]: { artist: SimplifiedArtist; total: number; tracks: TrackMatch } }; // e.g. one of two artists for a song match to another song
+		full: { artists: SimplifiedArtist[]; a: TrackMatch; b: TrackMatch }[]; // all artists for a song match to another song
+		one: {
+			[artistId: string]: { artist: SimplifiedArtist; a: TrackMatch; b: TrackMatch };
+		}; // e.g. one of two artists for a song match to another song
 	};
 	album: {
-		same: { [key: string]: { album: SimplifiedAlbum; total: number; tracks: TrackMatch } };
+		same: { [albumId: string]: { album: SimplifiedAlbum; total: number; tracks: TrackMatch } };
 	};
 	genre: {
-		album: { [key: string]: { album: SimplifiedAlbum; total: number } };
-		artist: { [key: string]: { artist: SimplifiedArtist; total: number } };
+		album: { [genre: string]: { album: SimplifiedAlbum; total: number } };
+		artist: { [genre: string]: { artist: SimplifiedArtist; total: number } };
 	};
-	date_added: { [key: string]: { a: number; b: number } };
+	date_added: { [date: string]: { a: number; b: number } };
 };
+
+export enum MatchState {
+	Left = 0,
+	Right = 1,
+	Both = 2
+}

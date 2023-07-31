@@ -1,4 +1,4 @@
-import type { PlaylistedTrack } from '@spotify/web-api-ts-sdk';
+import type { PlaylistedTrack, Track } from '@spotify/web-api-ts-sdk';
 import type { PlaylistIntersections, PlaylistWithTracks } from './types';
 
 export const generateIntersections = (p1: PlaylistWithTracks, p2: PlaylistWithTracks): PlaylistIntersections => {
@@ -41,11 +41,34 @@ export const generateIntersections = (p1: PlaylistWithTracks, p2: PlaylistWithTr
 	// song.similar
 	const songSimilar1 = p1.tracks.filter((t) => p2TrackNames.includes(t.track.name.toLowerCase())) as PlaylistedTrack[];
 	const songSimilar2 = p2.tracks.filter((t) => p1TrackNames.includes(t.track.name.toLowerCase())) as PlaylistedTrack[];
-	console.log(p1TrackNames);
-	console.log(p2TrackNames);
+	// console.log(p1TrackNames);
+	// console.log(p2TrackNames);
 	intersections.song.similar = [...songSimilar1, ...songSimilar2].filter(
 		(songSimilar) => !songIdenticalIds.includes(songSimilar.track.id)
 	);
+
+	// artist.one
+	const p1TrackPrimaryArtists = p1.tracks.map((t) => (t.track as Track).artists[0]);
+	const p2TrackPrimaryArtists = p2.tracks.map((t) => (t.track as Track).artists[0]);
+
+	const primaryArtists: PlaylistIntersections['artist']['one'] = {};
+	p1TrackPrimaryArtists.forEach((artist, i) => {
+		if (Object.keys(primaryArtists).includes(artist.id)) {
+			primaryArtists[artist.id].a.push(p1.tracks[i]);
+		} else {
+			primaryArtists[artist.id] = { artist: artist, a: [p1.tracks[i]], b: [] };
+		}
+	});
+	p2TrackPrimaryArtists.forEach((artist, i) => {
+		console.log(artist.name);
+		if (Object.keys(primaryArtists).includes(artist.id)) {
+			console.log(primaryArtists[artist.id].b);
+			primaryArtists[artist.id].b.push(p2.tracks[i]);
+		} else {
+			primaryArtists[artist.id] = { artist: artist, a: [], b: [p2.tracks[i]] };
+		}
+	});
+	intersections.artist.one = primaryArtists;
 
 	return intersections;
 };

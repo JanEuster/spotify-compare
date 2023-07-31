@@ -1,4 +1,5 @@
 <script lang="ts">
+	import ArtistTracksView from '$lib/common/ArtistTracksView.svelte';
 	import Hr from '$lib/common/Hr.svelte';
 	import TrackView from '$lib/common/TrackView.svelte';
 	import type { PlaylistIntersections, PlaylistWithTracks } from '$lib/types';
@@ -24,12 +25,12 @@
 			label: 'Song (similar) > e.g. differnet release of song',
 			data: playlistIntersections.song.similar
 		},
-		'artist.full': { label: 'Artist (full)', data: playlistIntersections.artist.full },
-		'artist.one': { label: 'Artist (one)', data: playlistIntersections.artist.one },
-		album: { label: 'Album', data: playlistIntersections.album },
-		'genre.album': { label: 'Genre (Album)', data: playlistIntersections.genre.album },
-		'genre.artist': { label: 'Genre (Artist)', data: playlistIntersections.genre.artist },
-		'date.added': { label: 'Date added', data: playlistIntersections.date_added }
+		// 'artist.full': { label: 'Artist (full)', data: playlistIntersections.artist.full },
+		'artist.one': { label: 'Artist (one)', data: playlistIntersections.artist.one }
+		// album: { label: 'Album', data: playlistIntersections.album }
+		// 'genre.album': { label: 'Genre (Album)', data: playlistIntersections.genre.album },
+		// 'genre.artist': { label: 'Genre (Artist)', data: playlistIntersections.genre.artist },
+		// 'date.added': { label: 'Date added', data: playlistIntersections.date_added }
 	};
 	let selected: string = SONG_IDENTICAL;
 	$: console.log(selected);
@@ -137,7 +138,35 @@
 	{:else if selected == ARTIST_FULL}
 		c
 	{:else if selected == ARTIST_ONE}
-		d
+		<tr>
+			<td class="table-data">
+				<table class="inner-table">
+					{#each Object.values(inter.artist.one) as a}
+						{#if a.a.length > 0 && a.b.length == 0}
+							<td><ArtistTracksView artist={a.artist} tracks={a.a} tracksAB={null} /></td>
+						{/if}
+					{/each}
+				</table>
+			</td>
+			<td class="table-data">
+				<table class="inner-table">
+					{#each Object.values(inter.artist.one) as a}
+						{#if a.a.length > 0 && a.b.length > 0}
+							<td><ArtistTracksView artist={a.artist} tracks={null} tracksAB={{ a: a.a, b: a.b }} /></td>
+						{/if}
+					{/each}
+				</table>
+			</td>
+			<td class="table-data">
+				<table class="inner-table">
+					{#each Object.values(inter.artist.one) as a}
+						{#if a.a.length == 0 && a.b.length > 0}
+							<td><ArtistTracksView artist={a.artist} tracks={a.b} tracksAB={null} /></td>
+						{/if}
+					{/each}
+				</table>
+			</td>
+		</tr>
 	{:else if selected == ALBUM}
 		e
 	{:else if selected == GENRE_ALBUM}

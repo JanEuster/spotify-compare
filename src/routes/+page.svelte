@@ -66,7 +66,6 @@
 	.app {
 		display: flex;
 		flex-direction: column;
-		width: 100vw;
 		max-width: 1900px;
 		height: 100vh;
 		margin-left: auto;

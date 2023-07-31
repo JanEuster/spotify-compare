@@ -41,7 +41,7 @@
 				break;
 			}
 		}
-		return tracks;
+		return tracks.filter((track) => track.track);
 	};
 
 	const getPlaylists = async () => {
