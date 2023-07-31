@@ -52,19 +52,20 @@
 			<h2>compared to</h2>
 			<div>
 				{#if selected == SONG_IDENTICAL}
-					{inter.song.identical.length} Songs
+					{inter.song.identical.length} Songs in Common
 				{:else if selected == SONG_SIMILAR}
-					{inter.song.similar.length} Songs
+					{inter.song.similar.length} Songs in Common
 				{:else if selected == ARTIST_FULL}
-					{inter.artist.full.length} Artists
+					{inter.artist.full.length} Artists in Common
 				{:else if selected == ARTIST_ONE}
-					{inter.artist.one.length} Artists
+					{Object.values(inter.artist.one).filter((artist) => artist.a.length > 0 && artist.b.length > 0).length} Artists
+					in Common
 				{:else if selected == ALBUM}
-					{inter.album.same.length} Albums
+					{inter.album.same.length} Albums in Common
 				{:else if selected == GENRE_ALBUM}
-					{inter.genre.album.length} Genres
+					{inter.genre.album.length} Genres in Common
 				{:else if selected == GENRE_ARTIST}
-					{inter.genre.artist.length} Genres
+					{inter.genre.artist.length} Genres in Common
 				{:else if selected == DATE_ADDED}
 					{inter.date_added.length}
 				{/if}
