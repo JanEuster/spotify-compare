@@ -80,7 +80,9 @@
 		<tr>
 			<td class="table-data">
 				<table class="inner-table">
-					{#each pl1.tracks as track}
+					{#each pl1.tracks.filter((track) => !inter.song.identical
+								.map((t) => t.track.id)
+								.includes(track.track.id)) as track}
 						<td>
 							<TrackView {track} />
 						</td>
@@ -98,7 +100,9 @@
 			</td>
 			<td class="table-data">
 				<table class="inner-table">
-					{#each pl2.tracks as track}
+					{#each pl2.tracks.filter((track) => !inter.song.identical
+								.map((t) => t.track.id)
+								.includes(track.track.id)) as track}
 						<td>
 							<TrackView {track} />
 						</td>
