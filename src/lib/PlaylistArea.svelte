@@ -119,6 +119,7 @@
 						<div class="text">
 							<h2>{playlist.playlist.name}</h2>
 							<p>{@html playlist.playlist.description}</p>
+							<h5>{playlist.tracks.length} tracks</h5>
 						</div>
 						<div class="buttons">
 							<GotoButton href={playlist.playlist.external_urls.spotify} />
@@ -173,6 +174,9 @@
 							padding: 2px 4px;
 							p {
 								color: var(--c-grey);
+							}
+							h5 {
+								margin-top: 10px;
 							}
 						}
 						.buttons {

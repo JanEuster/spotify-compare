@@ -30,7 +30,7 @@
 		box-sizing: border-box;
 	}
 	:global(body) {
-		background-color: var(--c-background);
+		background-color: black;
 		color: var(--c-text);
 		font-family: 'Bungee', sans-serif;
 	}

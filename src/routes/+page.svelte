@@ -41,7 +41,7 @@
 			<div class="playlist-areas-container" style={compare ? 'display: none;' : ''}>
 				<PlaylistArea selectable={true} setPlaylist={async (playlist) => (playlist1 = playlist)} />
 				{#if playlist1 && playlist2}
-					<button class="compare-now" on:click={() => (compare = true)}>compare now</button>
+					<div class="compare-now"><button on:click={() => (compare = true)}>compare now</button></div>
 				{/if}
 				<PlaylistArea
 					selectable={playlist2Selectable}
@@ -92,24 +92,42 @@
 			width: 100%;
 			height: 90%;
 			// min-height: 70vh;
+			margin-top: 10px;
 			gap: 5px;
 			padding: 10px;
+			background-color: var(--c-background);
+			border-radius: 10px;
 
 			.playlist-areas-container {
 				width: 100%;
 				height: 100%;
 				display: flex;
 				flex-direction: row;
-				gap: 2px;
+				gap: 4px;
+				& > :global(.container) {
+					width: 45% !important;
+				}
+				& > :global(button) {
+					width: 10%;
+					margin-top: -40px;
+				}
 
 				.compare-now {
-					background-color: var(--c-green-20);
-					border: 1px dotted var(--c-green-60);
-					outline: 1px dotted var(--c-green-100);
-					border-radius: 6px;
+					background-color: black;
 					max-height: 100px;
 					min-width: 100px;
-					color: var(--c-text);
+					margin-top: -40px;
+					padding: 6px;
+					border-radius: 12px;
+					& > button {
+						background-color: var(--c-green-20);
+						border: 1px dotted var(--c-green-60);
+						outline: 1px dotted var(--c-green-100);
+						width: 100%;
+						height: 100%;
+						border-radius: 6px;
+						color: var(--c-text);
+					}
 				}
 			}
 			.compare-table-wrapper {
