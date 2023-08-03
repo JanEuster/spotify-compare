@@ -12,6 +12,7 @@ export const load: PageServerLoad = async ({ cookies }) => {
 			| UserResponse
 			| SpotifyError;
 
+		console.log('spotifyUserProfile', spotifyUserProfile);
 		if (!(spotifyUserProfile as SpotifyError).error) {
 			return {
 				auth: true,

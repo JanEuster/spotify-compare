@@ -22,8 +22,14 @@ export type SpotifyError = {
 };
 
 export const SPOTIFY_BASE = 'https://api.spotify.com/v1';
-export const makeSpotifyRequest = async (token: string, endpoint: string): Promise<Record<string, any> | null> => {
-	const res = await fetch(SPOTIFY_BASE + endpoint, {
+export const makeSpotifyRequest = async (
+	token: string,
+	endpoint: string,
+	params: Record<string, any> | undefined
+): Promise<Record<string, any> | null> => {
+	const urlParams = params ? '?' + new URLSearchParams(params).toString() : '';
+	console.info(urlParams);
+	const res = await fetch(SPOTIFY_BASE + endpoint + urlParams, {
 		cache: 'reload',
 		headers: {
 			// Pragma: 'no-cache',

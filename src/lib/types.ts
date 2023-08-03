@@ -1,4 +1,5 @@
 import type {
+	AccessToken,
 	Playlist,
 	PlaylistedTrack,
 	SimplifiedAlbum,
@@ -8,7 +9,7 @@ import type {
 } from '@spotify/web-api-ts-sdk';
 
 export type PlaylistAreaType = PlaylistWithTracks | Playlist[] | 'loading' | null;
-export type SpotifyStore = { sdk: SpotifyApi; profile: UserResponse } | null;
+export type SpotifyStore = { sdk: SpotifyApi; profile: UserResponse; accessToken: AccessToken } | null;
 export type PlaylistStore = { playlists: Playlist[]; fetched: Date };
 export type PlaylistWithTracks = { playlist: Playlist; tracks: PlaylistedTrack[] };
 export type TrackMatch = PlaylistedTrack[];

@@ -6,14 +6,12 @@
 	import PlaylistArea from '$lib/PlaylistArea.svelte';
 	import { spotifyStore } from '$lib/stores';
 	import CompareTable from '$lib/CompareTable/CompareTable.svelte';
-	import { makeSpotifyRequest } from '$lib/auth';
-	import { onMount } from 'svelte';
 	export let data: PageData;
 
 	let sdk: SpotifyApi | undefined = undefined;
 	if (data.accessToken) {
 		sdk = SpotifyApi.withAccessToken(PUBLIC_SPOTIFY_CLIENT_ID, data.accessToken);
-		spotifyStore.set({ sdk: sdk, profile: data.profile });
+		spotifyStore.set({ sdk: sdk, profile: data.profile, accessToken: data.accessToken });
 		console.log(data.accessToken);
 	}
 
