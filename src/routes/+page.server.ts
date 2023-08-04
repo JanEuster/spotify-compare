@@ -1,6 +1,6 @@
 import { env } from '$env/dynamic/private';
 import { PUBLIC_SPOTIFY_CLIENT_ID } from '$env/static/public';
-import { makeSpotifyRequest, scope, type SpotifyError } from '$lib/auth';
+import { getSpotifyProfile, scope, type SpotifyError } from '$lib/auth';
 import type { PageServerLoad } from './$types';
 import type { AccessToken, UserResponse } from '@spotify/web-api-ts-sdk';
 
@@ -8,9 +8,7 @@ export const load: PageServerLoad = async ({ cookies }) => {
 	const tokenCookie = cookies.get('spotifyAccessToken');
 	if (tokenCookie) {
 		const accessToken = JSON.parse(tokenCookie) as AccessToken;
-		const spotifyUserProfile = (await makeSpotifyRequest(accessToken.access_token, '/me')) as
-			| UserResponse
-			| SpotifyError;
+		const spotifyUserProfile = await getSpotifyProfile(accessToken.access_token);
 
 		console.log('spotifyUserProfile', spotifyUserProfile);
 		if (!(spotifyUserProfile as SpotifyError).error) {
@@ -46,9 +44,7 @@ export const load: PageServerLoad = async ({ cookies }) => {
 				console.log('after refresh', accessToken.access_token);
 				cookies.set('spotifyAccessToken', JSON.stringify(accessToken), { path: '/' });
 
-				const spotifyUserProfile = (await makeSpotifyRequest(accessToken.access_token, '/me')) as
-					| UserResponse
-					| SpotifyError;
+				const spotifyUserProfile = await getSpotifyProfile(accessToken.access_token);
 				console.log('refresh', spotifyUserProfile, accessToken);
 				console.log('refreshed token', (await res.json()).access_token);
 				if (spotifyUserProfile && !(spotifyUserProfile as SpotifyError).error) {

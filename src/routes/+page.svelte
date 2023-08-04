@@ -1,16 +1,15 @@
 <script lang="ts">
-	import { SpotifyApi } from '@spotify/web-api-ts-sdk';
 	import type { PageData } from './$types';
 	import type { PlaylistWithTracks } from '$lib/types';
-	import { PUBLIC_SPOTIFY_CLIENT_ID } from '$env/static/public';
 	import PlaylistArea from '$lib/PlaylistArea.svelte';
 	import { spotifyStore } from '$lib/stores';
 	import CompareTable from '$lib/CompareTable/CompareTable.svelte';
+	import { SpotifySdk } from '$lib/auth';
 	export let data: PageData;
 
-	let sdk: SpotifyApi | undefined = undefined;
+	let sdk: SpotifySdk | undefined = undefined;
 	if (data.accessToken) {
-		sdk = SpotifyApi.withAccessToken(PUBLIC_SPOTIFY_CLIENT_ID, data.accessToken);
+		sdk = new SpotifySdk(data.accessToken, data.profile);
 		spotifyStore.set({ sdk: sdk, profile: data.profile, accessToken: data.accessToken });
 		console.log(data.accessToken);
 	}

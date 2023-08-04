@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Page, Playlist, PlaylistedTrack, SpotifyApi, Track } from '@spotify/web-api-ts-sdk';
+	import type { Playlist, PlaylistedTrack } from '@spotify/web-api-ts-sdk';
 	import type { PlaylistAreaType, PlaylistStore, PlaylistWithTracks, SpotifyStore } from '$lib/types';
 	import { spotifyPlaylists, spotifyStore } from './stores';
 	import TrackView from './common/TrackView.svelte';
@@ -7,7 +7,6 @@
 	import EditButton from './common/buttons/EditButton.svelte';
 	import ReloadButton from './common/buttons/ReloadButton.svelte';
 	import GotoButton from './common/buttons/GotoButton.svelte';
-	import { makeSpotifyRequest } from './auth';
 
 	export let setPlaylist: (playlist: PlaylistWithTracks) => void;
 	export let selectable: boolean;
@@ -23,33 +22,7 @@
 	});
 
 	const getTracks = async (playlist: Playlist): Promise<PlaylistedTrack[]> => {
-		const tracks: PlaylistedTrack[] = [];
-		let offset = 0;
-		while (true && spotify) {
-			// const newTracks = await spotify.sdk.playlists.getPlaylistItems(
-			// 	playlist.id,
-			// 	undefined,
-			// 	undefined,
-			// 	undefined,
-			// 	offset
-			// );
-			const newTracks = (await makeSpotifyRequest(
-				spotify!.accessToken.access_token,
-				`/playlists/${playlist.id}/tracks`,
-				{
-					offset: offset
-				}
-			)) as Page<PlaylistedTrack>;
-			console.log(newTracks);
-			if (newTracks) {
-				offset += newTracks.limit;
-				tracks.push(...newTracks.items);
-			}
-			console.log(tracks);
-			if (!newTracks || newTracks.offset + newTracks.limit > newTracks.total) {
-				break;
-			}
-		}
+		const tracks: PlaylistedTrack[] = await spotify!.sdk.playlists.getPlaylistItems(playlist.id);
 		return tracks.filter((track) => track.track);
 	};
 
@@ -59,20 +32,7 @@
 		let userPlaylists: Playlist[] = [];
 		// use stored playlists, when last fetched <60s ago
 		if (!(playlistsLastFetched && playlistsLastFetched.fetched?.getTime() - new Date().getTime() < 60 * 1000)) {
-			let offset = 0;
-			while (true && spotify) {
-				// const newPlaylists = await spotify.sdk.playlists.getUsersPlaylists(spotify.profile.id, undefined, offset);
-				const newPlaylists = (await makeSpotifyRequest(
-					spotify!.accessToken.access_token,
-					`/users/${spotify.profile.id}/playlists`,
-					{ offset: offset }
-				)) as Page<Playlist>;
-				userPlaylists.push(...newPlaylists.items);
-				if (newPlaylists.limit + newPlaylists.offset > newPlaylists.total) {
-					break;
-				}
-				offset += newPlaylists.limit;
-			}
+			userPlaylists = await spotify!.sdk.currentUser.getPlaylists();
 		} else {
 			console.log('skip fetch');
 			userPlaylists = playlistsLastFetched.playlists;
