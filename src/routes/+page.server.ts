@@ -42,7 +42,7 @@ export const load: PageServerLoad = async ({ cookies }) => {
 				console.log('before refresh', accessToken.access_token);
 				accessToken.access_token = (await res.json()).access_token;
 				console.log('after refresh', accessToken.access_token);
-				cookies.set('spotifyAccessToken', JSON.stringify(accessToken), { path: '/' });
+				cookies.set('spotifyAccessToken', JSON.stringify(accessToken), { path: '/', maxAge: accessToken.expires_in });
 
 				const spotifyUserProfile = await getSpotifyProfile(accessToken.access_token);
 				console.log('refresh', spotifyUserProfile, accessToken);

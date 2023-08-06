@@ -22,14 +22,14 @@ export const load: PageServerLoad = async ({ url, cookies }) => {
 			headers: {
 				// Accept: 'application/json',
 				'Content-Type': 'application/x-www-form-urlencoded',
-				Authorization: `Basic ${Buffer.from(
-					PUBLIC_SPOTIFY_CLIENT_ID + ':' + env.SPOTIFY_CLIENT_SECRET
-				).toString('base64')}`
+				Authorization: `Basic ${Buffer.from(PUBLIC_SPOTIFY_CLIENT_ID + ':' + env.SPOTIFY_CLIENT_SECRET).toString(
+					'base64'
+				)}`
 			}
 		});
 		console.log(res.status, res.statusText);
 		const tokenData = (await res.json()) as AccessToken;
-		cookies.set('spotifyAccessToken', JSON.stringify(tokenData), { path: '/' });
+		cookies.set('spotifyAccessToken', JSON.stringify(tokenData), { path: '/', maxAge: tokenData.expires_in });
 		throw redirect(307, '/?auth_status=success');
 	} else {
 		// something went wrong
